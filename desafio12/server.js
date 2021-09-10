@@ -1,72 +1,117 @@
-const express = require('express')
-let productos = require('./productos')
-const productosRouter = express.Router();
-const productosVista = express.Router();
-const APP = express();
+const express = require('express');
+const app = express();
+const http = require('http');
 
-//Handlebar Engine
-let exphbs  = require('express-handlebars');
-APP.engine('handlebars', exphbs());
-APP.set('view engine', 'handlebars');
+const server = http.Server(app);
+const io = require('socket.io')(server);
 
+const handlebars = require('express-handlebars');
+const Productos = require('./api/productos');
 
-APP.use(express.json());
-APP.use(express.urlencoded({extended: true}));
+let items = new Productos();
 
-const PORT = 8080;
+// establecemos la configuración de handlebars
+app.engine(
+    "hbs",
+    handlebars({
+        extname: ".hbs",
+        defaultLayout: 'vista.hbs',
+    })
+);
 
-//Routes
+app.set("view engine", "hbs");
+app.set("views", "./views");
 
-APP.get('/', (req,res)=>{
-    res.sendFile(__dirname + '/public/index.html')
-})
+app.use(express.static('public'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-productosVista.get('/productos/vista', (req,res)=>{
-    let listaDeProductos = productos.leer()
-    res.render('productos',{listaDeProductos})
-})
+// definimos las rutas http
+const router = express.Router();
+app.use('/api', router);
 
-productosRouter.get('/productos', (req,res)=> {
-    if(productos.leer().length === 0) {
-        res.json({'error': 'no hay productos cargados'})
+/* -------------------- HTTP endpoints ---------------------- */
+
+// TODO completar con lo realizado en entregas anteriores
+router.get('/productos/listar', (req, res) => {
+    const productos = items.listarAll();
+    if (productos.length > 0) {
+        res.json(productos)
+    } else {
+        res.json({
+            error: 'No hay productos cargados'
+        })
     }
-    res.json(productos.leer())
 })
 
-productosRouter.get('/productos/:id', (req,res)=>{
-    let productoByID = productos.leer().find(producto => producto.id === parseInt(req.params.id))
-    if (productoByID === undefined){
-        res.json({error : 'producto no encontrado'})
+router.get('/productos/listar/:id', (req, res) => {
+    const item = items.listar(req.params.id)
+    if (item) {
+        res.json(item)
+    } else {
+        res.json({
+            error: 'El producto no fue encontrado'
+        })
     }
-    res.json(productoByID)
 })
 
-productosRouter.post('/productos', (req,res)=>{
-    let title = req.body.title
-    let price = req.body.price
-    let thumbnail = req.body.thumbnail
-    productos.guardar(title, price, thumbnail)
-    res.redirect('back')
+router.post('/productos/guardar', (req, res) => {
+    items.guardar(req.body);
+    res.redirect('/');
+    console.log(items);
 })
 
-productosRouter.put('/productos/:id',(req,res)=>{
-    let foundIndex = productos.leer().findIndex(producto => producto.id === parseInt(req.params.id));
-    productos.productos[foundIndex] = req.body;
-    productos.productos[foundIndex].id = parseInt(req.params.id);
-    res.json(productos.productos[foundIndex])
-    
+router.put('/productos/actualizar/:id', (req, res) => {
+    const item = items.actualizar(req.params.id, req.body)
+    if (item) {
+        res.json(item)
+    } else {
+        res.json({
+            error: 'El producto no fue encontrado'
+        })
+    }
 })
 
-productosRouter.delete('/productos/:id', (req,res)=>{
-    productos.productos = productos.leer().filter(producto => producto.id !== parseInt(req.params.id))
-    console.log(productos.leer())
-    res.json(productos)
+router.delete('/productos/borrar/:id', (req, res) => {
+    let idProduct = req.params.id;
+    const item = items.borrar(idProduct);
+    if (item) {
+        res.json(item)
+    } else {
+        res.json({
+            error: 'El producto no fue encontrado'
+        })
+    }
 })
 
-APP.use('/api',productosRouter)
-APP.use(productosVista)
+router.get('/productos/vista', (req, res) => {
+    let prods = items.listarAll();
 
-const server = APP.listen(PORT, ()=> console.log(`Servidor en el puerto ${PORT}`))
+    res.render("vista", {
+        productos: prods,
+        hayProductos: prods.length
+    });
+});
 
-server.on('error', error => console.log(error))
+/* -------------------- Web Sockets ---------------------- */
 
+io.on('connection', socket => {
+    console.log("¡Nuevo cliente conectado!");
+    socket.emit('productos', items.get());
+    socket.on('update', data => {
+        if (data = 'ok') {
+            io.sockets.emit('productos', items.get());
+        }
+    })
+
+});
+
+/* ------------------------------------------------------- */
+
+const PORT = 8000;
+
+const srv = server.listen(PORT, () => {
+    console.log(`Servidor escuchando en http://localhost:${PORT}`);
+});
+
+srv.on("error", error => console.log(`Error en servidor ${error}`))
