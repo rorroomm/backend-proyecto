@@ -1,0 +1,6 @@
+{
+  "PORT": 8080,
+  "DB": 0,
+  "MONGO_LOCAL": "",
+  "MONGO_ATLAS": "mongodb+srv://rogerkpo666:<password>@cluster0.7kscg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+}
