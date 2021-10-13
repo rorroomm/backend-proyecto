@@ -13,7 +13,21 @@ const productos = [ ];
 app.get('/productos/vista-test', (req, res) => {
     const { cant } = req.query;
 
-    if(!cant) {
+     if(cant === 0 || cant < 0){
+        const noProd = "No hay productos";
+        res.send(noProd);
+    } else if (cant > 0) {
+        for(let i = 0; i < cant; i++){
+            const producto = {
+                nombre: faker.commerce.productName(),
+                precio: faker.commerce.price(),
+                foto: faker.image.imageUrl()
+            }
+            productos.push(producto);  
+            console.log(producto);
+        }
+        res.send(productos);
+    } else {
         for (let i = 0; i < 10; i++){
             const producto = {
                 nombre: faker.commerce.productName(),
@@ -26,22 +40,7 @@ app.get('/productos/vista-test', (req, res) => {
         res.send(productos);
     }
 
-    if(cant == 0){
-        const noProd = "No hay productos";
-        res.send(noProd);
-    }
-
-    for(let i = 0; i < cant; i++){
-        const producto = {
-            nombre: faker.commerce.productName(),
-            precio: faker.commerce.price(),
-            foto: faker.image.imageUrl()
-        }
-        productos.push(producto);  
-        console.log(producto);
-    }
-
-    res.send(productos);
+    
 })
 
 /* ----------------------- FAKER ----------------------- */
