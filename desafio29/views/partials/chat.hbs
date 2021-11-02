@@ -1,0 +1,36 @@
+<div class="container-fullchat">
+  <div class="container-flex-chat">
+    <h2 class="title-chat mt-4">¿Necesitas ayuda? Escribinos!</h2>
+    <form class="chat-form">
+      <input
+        type="email"
+        name="email"
+        id="email"
+        class="form-control mt-4"
+        placeholder="Ingrese su email"
+        required
+      />
+      <input
+        id="msg"
+        class="form-control mt-4"
+        type="text"
+        placeholder="Escriba su mensaje"
+        required
+        autocomplete="off"
+      />
+      <button onclick="sendMessage()" class="btn btn-dark mt-4"><i
+          class="fas fa-paper-plane"
+        ></i>
+        Send</button>
+    </form>
+  </div>
+  <div class="messages">
+
+  </div>
+</div>
+
+<script>
+  const sendMessage = (e) => {e.preventDefault() let msg = { msg :
+  document.getElementById('msg').value, email :
+  document.getElementById('email').value } socket.emit('new-message', msg ); }
+</script>

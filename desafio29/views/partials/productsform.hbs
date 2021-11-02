@@ -1,0 +1,61 @@
+<div class="container-form-productos">
+  <h2 class="title-form-productos mt-4">Ingrese los datos para agregar un
+    producto a la base:</h2>
+
+  <form
+    action="/api/products/add"
+    method="POST"
+    class="form-list"
+    class="form-productos"
+  >
+
+    <div>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        class="field form-control"
+        placeholder="Ingrese el nombre"
+      />
+    </div>
+    <div>
+      <input
+        type="number"
+        id="price"
+        name="price"
+        class="field form-control mt-2"
+        placeholder="Ingrese el precio"
+      />
+    </div>
+    <div>
+      <input
+        type="text"
+        id="description"
+        name="description"
+        class="field form-control mt-2"
+        placeholder="Ingrese una descripcion"
+      />
+    </div>
+    <div>
+      <input
+        type="text"
+        id="thumbnail"
+        name="thumbnail"
+        class="field form-control mt-2"
+        placeholder="Ingrese el URL de la imagen"
+      />
+    </div>
+    <div>
+      <input
+        type="number"
+        id="stock"
+        name="stock"
+        class="field form-control mt-2"
+        placeholder="Ingrese el stock"
+      />
+    </div>
+
+    <button class="btn btn-dark mt-4" type="submit">Enviar datos</button>
+
+  </form>
+</div>

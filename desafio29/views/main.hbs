@@ -1,0 +1,20 @@
+  <br />
+  <div class='alert alert-success alertaLogout' role='alert'>
+        <br>
+        <h2><i>Bienvenido {{nombre}}</i></h2>
+        <br>
+        <img src="{{foto}}" width="100" alt=""><br>
+        <a href="#">{{email}}</a>
+        <br>
+        <br>
+    <form action='/api/logout' method='POST' autocomplete='off'>
+      <button class='btn btn-warning' id='destroy' name='destroy'>Logout</button>
+    </form>
+  </div>
+<div class="flex-container">
+     <div class="container-chat">
+     {{> productsform}}
+     {{> productlist}}
+     </div>
+     {{> chat}}
+</div>  
