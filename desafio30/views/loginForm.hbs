@@ -1,0 +1,56 @@
+<section class="section-login">
+  <h1 class="text-center mt-4">
+    Ingrese sus credenciales para continuar
+    <i class="icon-hand far fa-hand-point-left"></i>
+  </h1>
+  <form
+    class="form-user mt-4"
+    action="/api/login"
+    method="POST"
+    autocomplete="off"
+  >
+    <div class="form-div">
+      <div class="form-group myForm">
+        <input
+          type="text"
+          class="input-user form-control"
+          id="username"
+          name="username"
+          placeholder="Ingrese su nombre"
+          required
+        />
+      </div>
+    </div>
+    <div class="form-div">
+      <div class="form-group myForm">
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          name="password"
+          placeholder="Ingrese su contraseña"
+          required
+        />
+      </div>
+    </div>
+    <div class="formButton form-div">
+      <button
+        class="btn-user btn-login btn btn-dark"
+        style="align-content: flex-end;"
+      >Ingresar</button>
+    </div>
+    <a class="registro" href="/api/signupPage">¿No estas registrado?</a>
+  </form>
+  <form class="mt-4 form-fb">
+    <div
+      class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start mt-4"
+    >
+      <p class="lead fw-normal mb-0 me-3">Sign in with</p>
+      <button type="button" class="btn btn-floating mx-1">
+        <a class="btn-fb" href="/api/auth/facebook"><i
+            class="fab fa-facebook-f"
+          ></i></a>
+      </button>
+    </div>
+  </form>
+</section>
